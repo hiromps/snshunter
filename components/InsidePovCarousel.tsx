@@ -311,7 +311,7 @@ export default function InsidePovCarousel({
                 muted
                 loop
                 playsInline
-                preload="metadata"
+                preload="auto"
               />
             </figure>
           ))}

@@ -1,6 +1,7 @@
 import CtaButton from "./CtaButton";
 import { AvatarStack } from "./Avatar";
 import InsidePovCarousel, { type VideoItem } from "./InsidePovCarousel";
+import { HERO_POSTERS } from "./heroPosters";
 
 // ⚠ デモ（雰囲気確認）用の外部動画。本番では自社ホスティングの動画URLに差し替える。
 const DEMO_SRCS = [
@@ -16,9 +17,12 @@ const DEMO_SRCS = [
   "https://framerusercontent.com/assets/QxSN4iUsvu5UJqmkep9KzGN3Xw.mp4",
 ];
 
-// 14枚を10本のデモ動画から循環して割り当て（7枚可視 & step=25.7deg を維持）
+// 14枚を10本のデモ動画から循環して割り当て（7枚可視 & step=25.7deg を維持）。
+// poster は1フレーム目をbase64インライン化したものなので、SSRのHTML描画と同時に
+// 遅延なしで表示される（動画データのダウンロードを待たない）。
 const HERO_VIDEOS: VideoItem[] = Array.from({ length: 14 }, (_, i) => ({
   src: DEMO_SRCS[i % DEMO_SRCS.length],
+  poster: HERO_POSTERS[i % HERO_POSTERS.length],
   alt: `creator reel ${i + 1}`,
 }));
 

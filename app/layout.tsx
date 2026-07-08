@@ -38,7 +38,16 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${instrumentSerif.variable} antialiased`}
     >
-      <body>{children}</body>
+      <body>
+        {/* デモ動画CDNへ早期接続してポスター表示後の再生開始を短縮（SSRでheadへホイスト） */}
+        <link
+          rel="preconnect"
+          href="https://framerusercontent.com"
+          crossOrigin="anonymous"
+        />
+        <link rel="dns-prefetch" href="//framerusercontent.com" />
+        {children}
+      </body>
     </html>
   );
 }

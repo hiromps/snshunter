@@ -62,6 +62,17 @@ export default function InsidePovCarousel({
   // 見た目に影響する最小限の状態のみReact stateで管理（UIボタンは一切なし）
   const [autoRotating, setAutoRotating] = useState(autoRotate);
   const [isDragging, setIsDragging] = useState(false);
+  // 動画が再生可能になったカードのindex（読み込み完了まで非表示にする）
+  const [loadedCards, setLoadedCards] = useState<Set<number>>(() => new Set());
+
+  const markLoaded = useCallback((index: number) => {
+    setLoadedCards((prev) => {
+      if (prev.has(index)) return prev;
+      const next = new Set(prev);
+      next.add(index);
+      return next;
+    });
+  }, []);
 
   // カード枚数から1枚あたりの角度を自動計算（SSRでも決定的）
   const step = useMemo(() => 360 / Math.max(videos.length, 1), [videos.length]);
@@ -297,12 +308,16 @@ export default function InsidePovCarousel({
               ref={(node) => {
                 cardRefs.current[index] = node;
               }}
-              className={styles.card}
+              className={`${styles.card}${
+                loadedCards.has(index) ? ` ${styles.isLoaded}` : ""
+              }`}
               style={{ "--i": index } as CSSVars}
             >
               <video
                 ref={(node) => {
                   videoRefs.current[index] = node;
+                  // 既に十分読み込み済み（キャッシュ等）なら即表示
+                  if (node && node.readyState >= 4) markLoaded(index);
                 }}
                 className={styles.video}
                 src={video.src}
@@ -312,6 +327,7 @@ export default function InsidePovCarousel({
                 loop
                 playsInline
                 preload="auto"
+                onCanPlayThrough={() => markLoaded(index)}
               />
             </figure>
           ))}

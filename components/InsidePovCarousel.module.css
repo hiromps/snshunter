@@ -71,7 +71,10 @@
   margin: 0;
   overflow: hidden;
   border-radius: var(--pov-card-radius);
-  background: rgba(255, 255, 255, 0.2);
+  /* 読み込み完了までカードを非表示（グレーのプレースホルダーを見せない） */
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.5s ease;
   transform-style: preserve-3d;
   /* ★最重要：中心視点 → 外周へ押し出す配置（translateZは負） */
   transform:
@@ -83,6 +86,11 @@
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   will-change: transform;
+}
+
+/* 動画が再生可能になったカードだけ表示 */
+.card.isLoaded {
+  opacity: 1;
 }
 
 /* 白い内側ハイライト + 下側の陰影で立体感 */
@@ -120,7 +128,7 @@
   object-fit: cover;
   object-position: 50% 50%;
   border-radius: inherit;
-  background: #ddd;
+  background: transparent;
 }
 
 .dragging {
